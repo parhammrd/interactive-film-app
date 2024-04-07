@@ -9,6 +9,20 @@ Before running, ensure that you have the following:
   pip install -r requirements.txt
   ```
 
+## Running uvicorn:
+
+- implement host:port
+
+```shell
+uvicorn main:app --port=8000 --host=0.0.0.0
+```
+
+- reload flag
+
+```shell
+uvicorn main:app --reload
+```
+
 ## Adding pre-commit hooks:
 
 ```shell
