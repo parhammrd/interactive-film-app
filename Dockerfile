@@ -2,7 +2,7 @@
 FROM python:3.9.18-slim-bullseye
 
 # Install system dependencies
-RUN apt-get update && apt-get upgrade
+RUN apt-get update && apt-get upgrade -y
 
 # Set the working directory inside the container
 WORKDIR /interactive-film-api
@@ -13,4 +13,8 @@ COPY . /interactive-film-api/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ENTRYPOINT [ "executable" ]
+RUN chmod +x /interactive-film-api/run.sh
+
+EXPOSE 8000
+
+ENTRYPOINT ["/interactive-film-api/run.sh"]

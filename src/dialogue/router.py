@@ -3,14 +3,16 @@ from src.logs import logger
 from fastapi import APIRouter, HTTPException
 from pydantic import ValidationError
 
-from . import schemas
+from sqlmodel import Session
+from . import schemas, models
+from src.database import engine
 
 
 router = APIRouter(tags=['users'])
 
 
 @router.post('/dialogue/')
-async def capture_answer(userresponse: schemas.UserResponse):
+def capture_answer(userresponse: schemas.UserResponse):
     """
     Capture the user answer during the watching film and create
     specific scenario for the interactive-film
@@ -20,7 +22,14 @@ async def capture_answer(userresponse: schemas.UserResponse):
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-    print(validated_data.model_dump())
+    with Session(engine) as session:
+        item = models.Dialogue(
+            userid=validated_data.email,
+            question=validated_data.question,
+            answer=validated_data.answer,
+        )
+        session.add(item)
+        session.commit()
 
     logger.info('User response listed successfully.')
     return {'message': 'User response listed successfully'}
